@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <time.h>
+
+void shell(int* items, int count) {
+    int i, j, gap, k;
+    int x, a[5];
+    a[0] = 9; a[1] = 5; a[2] = 3; a[3] = 2; a[4] = 1;
+    for (k = 0; k < 5; k++) {
+        gap = a[k];
+        for (i = gap; i < count; ++i) {
+            x = items[i];
+            for (j = i - gap; (x < items[j]) && (j >= 0); j -= gap)
+                items[j + gap] = items[j];
+            items[j + gap] = x;
+        }
+    }
+}
+
+int main() {
+    const int count = 10;
+    int items[count];
+
+    // Заполнение массива: первая половина - возрастающая, вторая - убывающая
+    for (int i = 0; i < count / 2; i++) {
+        items[i] = i + 1;
+    }
+    for (int i = count / 2; i < count; i++) {
+        items[i] = count - i;
+    }
+
+    clock_t start, end;
+    double cpu_time_used;
+
+    start = clock();
+    shell(items, count);
+    end = clock();
+    cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+    printf("Отсортированный массив: ");
+    for (int i = 0; i < count; i++) {
+        printf("%d ", items[i]);
+    }
+    printf("\nВремя выполнения функции: %f секунд\n", cpu_time_used);
+
+    return 0;
+}
