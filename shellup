@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+typedef struct Node {
+    int data;
+    int priority;
+    struct Node* next;
+} Node;
+// Создает новый узел
+Node* createNode(int data, int priority) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->priority = priority;
+    newNode->next = NULL;
+    return newNode;
+
+}
+
+// Вставляет новый элемент в очередь по приоритету
+void enqueue(Node** head, int data, int priority) {
+    Node* newNode = createNode(data, priority);
+
+    // Если очередь пуста или новый элемент имеет больший приоритет,
+    // то вставляем его в начало
+    if (*head == NULL || (*head)->priority < priority) {
+        newNode->next = *head;
+        *head = newNode;
+    }
+    else {
+        Node* current = *head;
+        while (current->next && current->next->priority > priority) {
+            current = current->next;
+        }
+        newNode->next = current->next;
+        current->next
+            = newNode;
+    }
+}
+
+// Извлекает элемент с наивысшим приоритетом
+int dequeue(Node** head) {
+    if (*head == NULL) {
+        printf("Queue is empty\n");
+        return -1;
+    }
+    Node* temp = *head;
+    int data = temp->data;
+    *head = (*head)->next;
+    free(temp);
+    return data;
+
+}
+
+// Печатает очередь
+void printQueue(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        printf("%d(%d) ", current->data, current->priority);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void addFromKeyboard(Node** head) {
+    setlocale(LC_ALL, "Russian");
+    int data, priority;
+
+    printf("Введите данные элемента: ");
+    if (scanf_s("%d", &data, sizeof(data)) != 1) {
+        printf("Ошибка ввода данных!\n");
+        return;
+    }
+
+    printf("Введите приоритет элемента: ");
+    if (scanf_s("%d", &priority, sizeof(priority)) != 1) {
+        printf("Ошибка ввода приоритета!\n");
+        return;
+    }
+
+    enqueue(head, data, priority);
+    printf("Элемент добавлен в очередь.\n");
+}
+int main() {
+    Node* head = NULL;
+    int choice;
+
+    do {
+        printf("\nМеню:\n");
+        printf("1. Добавить элемент\n");
+        printf("2. Извлечь элемент\n");
+        printf("3. Вывести очередь\n");
+        printf("0. Выход\n");
+        printf("Ваш выбор: ");
+        scanf_s("%d", &choice);
+
+        switch (choice) {
+        case 1:
+            addFromKeyboard(&head);
+            break;
+            // ... другие варианты
+        }
+    } while (choice != 0);
+
+    return 0;
+}
