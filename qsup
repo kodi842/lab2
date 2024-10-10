@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <time.h>
+
+void qs(int* items, int left, int right) {
+    int i, j;
+    int x, y;
+    i = left; j = right;
+    x = items[(left + right) / 2];
+    do {
+        while ((items[i] < x) && (i < right)) i++;
+        while ((x < items[j]) && (j > left)) j--;
+        if (i <= j) {
+            y = items[i];
+            items[i] = items[j];
+            items[j] = y;
+            i++; j--;
+        }
+    } while (i <= j);
+    if (left < j) qs(items, left, j);
+    if (i < right) qs(items, i, right);
+}
+
+int main() {
+    const int count = 10;
+    int items[count];
+
+    // Заполнение массива возрастающей последовательностью чисел
+    for (int i = 0; i < count; i++) {
+        items[i] = i + 1;
+    }
+
+    clock_t start, end;
+    double timeusd;
+
+    start = clock();
+    qs(items, 0, count - 1);
+    end = clock();
+    timeusd = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+    printf("Отсортированный массив: ");
+    for (int i = 0; i < count; i++) {
+        printf("%d ", items[i]);
+    }
+    printf("\nВремя выполнения функции: %f секунд\n", timeusd);
+
+    return 0;
+}
